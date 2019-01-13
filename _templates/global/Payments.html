@@ -1,0 +1,84 @@
+{% extends "global/Templates.html" %}
+{% load staticfiles otree %}
+
+{% block content %}
+<div id="interface_container">
+
+<div id="header"></div>
+<div id="container">
+
+<div id="instructions"><h3>Instructions</h3>
+  <p>Your earnings summary and details are below. <br>
+    Once you have read them, please fill out your receipt as described at the bottom of the page, and then click 'Finish'.</p>
+</div>
+
+<br><br>
+
+<div id="earnings-summary-container"><h3>Earnings Summary</h3>
+<p>You earned {{player.action_earnings}} from choosing actions.</p>
+<p>You earned {{player.belief_earnings}} from stating beliefs.</p>
+<p>Additionally, you are paid a show-up fee of {{ session.config.participation_fee }}.</p>
+<p>Your total earnings are therefore {{ participant.payoff_plus_participation_fee }}.</p>
+</div>
+
+<br><br>
+
+<div id="earnings-details-container"><h3>Earnings Details</h3>
+  <h3>Action Results</h3>
+  <action-result v-for="result in action_results" :result="result"></action-result>
+
+  <br><br>
+
+  <h3>Belief Results</h3>
+  <belief-result v-for="result in belief_results" :result="result"></belief-result>
+
+
+</div>
+
+
+<br><br>
+
+<div id="receipt-container"><h3>Receipt</h3>
+<p>Please fill out the receipt on your desk as follows:</p>
+<div id="receipt">
+<p><strong>Date:</strong> ${date} </p>
+<p><strong>Computer ID:</strong> {{player.participant.label}}</p>
+<p><strong>Experimental Earnings:</strong> {{ participant.payoff }}</p>
+<p><strong>Show-up fee:</strong> {{ session.config.participation_fee }}</p>
+<p><strong>Total:</strong> {{ participant.payoff_plus_participation_fee }}</p>
+</div>
+</div>
+
+
+<br><br>
+<p><strong>Warning</strong>: do not click 'Finish' until you have filled out your receipt.</p>
+<div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Finish</button></div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+
+<script>
+vm = new Vue({
+      el: '#container',
+      delimiters: ['${', '}'],
+      data: {
+        date: new Date().toLocaleDateString('en-US'),
+        paid_round_outcomes: {{player.participant.vars.paid_round_outcomes|json}},
+      },
+      computed: {
+        action_results: function() {
+          return this.paid_round_outcomes.filter(x => x.payment_type == 'action')
+        },
+        belief_results: function() {
+          return this.paid_round_outcomes.filter(x => x.payment_type == 'belief')
+        }
+      }
+    });
+
+
+</script>
+
+{% endblock %}

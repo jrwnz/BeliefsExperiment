@@ -1,0 +1,1 @@
+{"a": {"action": {"number": 1, "amount": 10}}, "b": {"action": {"number": 2, "amount": 10}, "belief": {"number": 2, "amount": 5}}, "uc": {"action": {"number": 1, "amount": 10}}}

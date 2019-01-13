@@ -1,0 +1,142 @@
+{% extends "global/BaseInterface.html" %} 
+
+{% block instructions_above %}
+<div v-if="collect_actions">
+<h4 :class="{imperative: true, active: active_bool}">Click to select between 
+  <span v-if="role=='blue'" class="blue" v-for="strat in bluestrats.slice(0,-2)">${strat[0]}, </span>
+  <span v-if="role=='red'" class="red" v-for="strat in redstrats.slice(0,-2)">${strat[0]}, </span>
+  <span v-if="role=='blue'" class="blue">${bluestrats.slice(-2)[0][0]}</span>
+  <span v-if="role=='red'" class="red">${redstrats.slice(-2)[0][0]}</span> 
+    and 
+  <span v-if="role=='blue'" class="blue">${bluestrats.slice(-1)[0][0]}</span>
+  <span v-if="role=='red'" class="red">${redstrats.slice(-1)[0][0]}</span>:</h4>
+<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue'}">
+</div>
+{% endblock %}
+
+
+{% block instructions_below %}
+<div v-if="collect_beliefs">
+<h4 :class="{imperative: true, active: active_bool}">
+  What do you believe is the probability that a randomly <br> selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span>?  
+</h4>
+<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue'}">
+<h4 id="beliefinputouter" :class="{active: active_bool}">
+  <input id="beliefinput" :disabled="!active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
+  %
+</h4>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    vm = new Vue({
+      el: '#interface_container',
+      delimiters: ['${', '}'],
+      data: {
+        base_payoffs: base_payoffs,
+        // player: {{player.id_in_group}},
+        role: "{{player.role}}",
+        practice: "{{Constants.practice}}" == "True",
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+        played_by: "--",
+        time_now: null,
+        start_time: null,
+        active_time: null,
+        active_bool: false,
+        time_limit: {{ session.config.time_limit}},
+        time_until_active: {{ session.config.time_limit}},
+        // time_limit: 1,
+        // time_until_active: 1,
+        time_to_decide: null,
+        time_to_submit: null,
+        times_changed_mind: -1,
+        collect_actions: "{{Constants.collect_actions}}" == "True",
+        collect_beliefs: "{{Constants.collect_beliefs}}" == "True",
+        show_belief_table: "{{Constants.collect_beliefs}}" == "True",
+        action: null,
+        belief: null,
+      },
+      computed: {
+        high: function () {return [this.action]},
+        clickable: function () {return this.collect_actions && this.active_bool},
+        beliefs_valid: function () {return (this.belief >= 0 && this.belief <= 100 && this.belief === parseInt(this.belief,10))},
+        beliefs: function () {      
+          if (this.beliefs_valid) {
+            if (this.role=='blue') {
+              return {'L': this.belief, 'R': 100-this.belief}
+              }
+            else {
+              return {'U': this.belief, 'D': 100-this.belief}
+              }
+          } 
+          else {return {}}
+          },
+        bluestrats: function() {
+          if ('U' == _.keys(this.base_payoffs)[0]) {return ['U','D']}
+          else {return _.keys(this.base_payoffs).sort()}
+        },
+        redstrats: function() {
+          return _.keys(this.base_payoffs[_.keys(this.base_payoffs)[0]]).sort()          
+        },
+        submit_available: function () {
+            if (this.collect_beliefs && !this.beliefs_valid) {return false}
+            else if (this.collect_actions && this.action == null) {return false}
+            else {return true}
+        }
+      },
+      mounted: function () {
+        this.start_time = _.now()/1000
+        this.active_time = this.start_time + this.time_limit
+        window.setInterval(() => {
+            this.time_now = _.now()/1000;
+            this.time_until_active = (this.active_time - this.time_now).toFixed(0);
+            if (this.time_until_active <= 0) {
+              this.active_bool = true;
+              }
+          }
+          , 1000)
+          if (this.testing_if_yes == 'yes' || this.testing_if_yes == 'practice') {
+            this.active_bool = true;
+            this.belief = _.random(100)
+            if (this.role == 'blue') {
+              this.action = _.sampleSize(this.bluestrats,1)[0]
+            } else {
+              this.action = _.sampleSize(this.redstrats,1)[0]
+            }
+            this.played_by = "Testing"
+            this.times_changed_mind += 1
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)
+            setTimeout(function () {
+              document.getElementById("submit").click();
+            }, 500*Math.random())
+        }
+      },
+      methods: {
+        setaction: function(action) {
+            if (action != this.action) {this.times_changed_mind += 1}
+            this.action = action
+            this.played_by = "User"
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)
+            setTimeout(function () {
+            }, 100)    
+        },
+        setbelief: function() {
+            this.times_changed_mind += 1
+            this.played_by = "User"
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)          
+        },
+        submit: function() {
+          this.time_to_submit = (_.now()/1000 - this.start_time).toFixed(3)
+          setTimeout(function () {
+              document.getElementById("true_submit").click();
+            }, 50)
+        },
+        enterPressed: function() {
+          if (this.submit_available) {this.submit()}
+        }
+      }
+    });
+
+</script>
+{% endblock %}

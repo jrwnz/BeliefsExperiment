@@ -1,0 +1,71 @@
+{% extends "global/Templates.html" %}
+{% load staticfiles otree %}
+
+{% block content %}
+
+<div id="interface_container">
+
+    <div id="header"></div>
+    <div id="container">
+    
+    <div id="instructions"><h3>Section 3 Training Instructions</h3>
+      <div class="instructionsbox"> 
+          <p>In Section 3 your task will be the same as in Section 1: in each round, you will be randomly paired with another player, and then asked to select an action. <br>
+              Each player will be the same color as they were throughout Section 2.<br> 
+              As before, the outcome of each round will depend on both players' chosen actions.</p>
+          <p>There are two differences relative to Section 1:</p>
+      
+      <h6>Actions</h6>
+      <p>Each player will have more than two actions to choose from. <br>
+        The actions will be represented by numbers instead of letters: <br>
+        <span class="blue">1, 2, 3, ...</span> replace <span class="blue">U</span> and <span class="blue">D</span><br>
+        <span class="red">1, 2, 3, ...</span> replace <span class="red">L</span> and <span class="red">R</span></p>
+
+      <h6>Probabilities</h6>
+      <p>Your probability of receiving a ${{Constants.payoff_info.uc.action.amount}} prize will be 30% plus the probability from the chosen cell of the matrix.<br>
+        For example:<br>
+        If your number in the chosen cell is 20, your prize probability will be 30% + 20% = 50%.</br>
+        If your number in the chosen cell is -10, your prize probability will be 30% + (-10%) = 20%.</p>
+        <p>All matrix numbers are between -30 and 70, so your prize probabilty is guaranteed to be between 0% and 100%.</p>
+      </div>
+    </div>
+
+    <br><br>
+    <p>To make sure you understand these changes, you will now play a training round, similar to that which you played before Section 1. <br>
+      You will be asked to answer a question about a payoff matrix by typing a whole number into a box. <br>
+      Once you have typed the correct number, a 'Continue' button will appear, which you may click.<br>
+    If you have any questions, please raise your hand and wait for assistance. <br> 
+    Otherwise, click 'Continue' to proceed to the training round.</p>
+    <div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Continue</button></div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    vm = new Vue({
+      el: '#container',
+      delimiters: ['${', '}'],
+      data: {
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+      },
+      mounted: function () {
+        if (this.testing_if_yes == 'yes') {
+            setTimeout(function () {
+              document.getElementById("sectioncontinuebutton").click();
+            }, 10)
+          }
+      },
+    });
+
+
+</script>
+
+{% endblock %}
+
+{% block styles %}
+
+
+{% endblock %}

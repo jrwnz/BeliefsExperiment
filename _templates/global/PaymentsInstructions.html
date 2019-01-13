@@ -1,0 +1,157 @@
+{% extends "global/Templates.html" %}
+{% load staticfiles otree %}
+
+{% block content %}
+<div id="interface_container">
+
+<div id="header"></div>
+<div id="container">
+
+<div id="instructions"><h3>Instructions</h3>
+  <div class="instructionsbox"> 
+  <p>You have now completed the paid part of the experiment. <br>
+    On the next page, you will be shown your results, and shown how to fill out your payment receipt. <br>
+    Please read below how these results are determined and presented, then click 'Continue'.</p>
+  </div>
+</div>
+
+<br>
+
+<div id="earnings-summary-container"><h3>Payment Rounds</h3>
+  <div class="instructionsbox"> 
+<p>As previously described, you will be paid based upon which action you and another player chose for 
+  ${payoff_info.a.action.number} round<span v-if="payoff_info.a.action.number>1">s</span> from Section 1, 
+  ${payoff_info.b.action.number} round<span v-if="payoff_info.b.action.number>1">s</span> from Section 2, and
+  ${payoff_info.uc.action.number} round<span v-if="payoff_info.uc.action.number>1">s</span> from Section 3.<br>
+  You will also be paid based upon the belief you stated about another player's action for 
+  ${payoff_info.b.belief.number} round<span v-if="payoff_info.b.action.number>1">s</span> from Section 2.
+<br>
+These rounds are randomly drawn by the computer with the caveat that each of the paid rounds will feature different games (i.e. games with different payoff matrices). <p>
+</div>
+</div>
+
+<br>
+
+<div id="earnings-details-container"><h3>Example Results</h3>
+  <p>Note that the results on this page are examples, and feature games you did not actually play.</p>
+
+  <h3>Action Results</h3>
+<p>When you are paid based on yours and another players' actions, the results will be presented as follows:</p>
+  <hr>
+  <action-result :result="action_result_example"></action-result>
+  <div class="instructionsbox"> 
+    <h4>How to read these results:</h4>
+  <p>In this example, Round ${action_result_example.round_number} of Section ${action_result_example.section_number} was chosen for payment. The matrix on the right shows the actions each player took, and that your resulting payoff would be ${action_result_example.payoff_prob} points. <br>
+    Recall that this means a ${action_result_example.payoff_prob}% chance of earning $${action_result_example.possible_payoff_amount}. </p>
+    <p>To determine whether the $${action_result_example.possible_payoff_amount} prize would be paid, a random number is drawn from the continuous uniform distribution between 0 and 1. Since this has a ${action_result_example.payoff_prob}% probability of being below ${(action_result_example.payoff_prob/100).toFixed(2)}, you would be paid the prize only if this is the case. </p>
+    <p>In this example, the randomly drawn number is ${action_result_example.payoff_draw}, which is below ${(action_result_example.payoff_prob/100).toFixed(2)}, and therefore the $${action_result_example.possible_payoff_amount} prize would be paid.</p>
+    <p>For Section 3, the results are presented in the same way, except that your probability of earning $${action_result_example.possible_payoff_amount} 
+        is 30% plus the number shown in the matrix.</p>
+  </div>
+  <hr><br><br><br>
+
+  <h3>Belief Results</h3>
+  <p>When you are paid based on your beliefs about another player's actions, the results will be presented as follows:</p>
+  <h4>Example 1</h4>
+  <hr>
+  <belief-result :result="belief_result_example"></belief-result>
+  <div class="instructionsbox"> 
+      <h4>How to read these results:</h4>
+  <p>In this example, Round ${belief_result_example.round_number} was chosen for payment. You are told your stated belief about a randomly drawn player's action. Both this belief and a randomly drawn player's action are shown on the matrix on the right.</p>
+    <p>Next, you are told which of the 101 questions was randomly drawn for payment. Here, since the question number, ${belief_result_example.paid_question}, is greater than your belief, ${belief_result_example.belief}, your chosen option for that question would have been '$${belief_result_example.possible_payoff_amount} with probability ${belief_result_example.paid_question}%'. </p>
+    <p>As before, to determine whether the $${belief_result_example.possible_payoff_amount} prize would be paid, a random number is drawn from the continuous uniform distribution between 0 and 1. Since this has an ${belief_result_example.paid_question}% probability of being below ${(belief_result_example.paid_question/100).toFixed(2)}, you would be paid the prize only if this is the case. </p>
+    <p>In this example, the randomly drawn number is ${belief_result_example.lottery_draw}, which is above ${(belief_result_example.paid_question/100).toFixed(2)}, and therefore you would earn $${belief_result_example2.payoff_amount}.</p>
+  </div><hr>
+  <br><br><br>
+  <h4>Example 2</h4>
+  <hr>
+  <belief-result :result="belief_result_example2"></belief-result>
+  <div class="instructionsbox"> 
+      <h4>How to read these results:</h4>
+  <p>This example is the same as the previous one, except here the randomly drawn question, ${belief_result_example2.paid_question}, is lower than the belief, ${belief_result_example2.belief}, and so your chosen option for that question would have been '$${belief_result_example2.possible_payoff_amount} if the <span v-if="belief_result_example.role=='blue'" class='red'>red</span><span v-else class="blue">blue</span> player chose <span v-if="belief_result_example.role=='blue'" class='red'>L</span><span v-else class="blue">U</span>'.</p>            
+    <p>In this example, the <span v-if="belief_result_example.role=='blue'" class='red'>red</span><span v-else class="blue">blue</span> player chose <span v-if="belief_result_example.role=='blue'" class='red'>R</span><span v-else class="blue">D</span>, and therefore you would earn $${belief_result_example2.payoff_amount}.</p>
+  </div>
+  <hr><br><br><br>
+
+</div>
+
+
+<br><br>
+<p>Once you understand how the results are presented, click 'Continue' to see your results</p>
+<div id="buttoncontainer"><button class="submit_button btn btnblue" id="submit">Continue</button></div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+
+<script>
+vm = new Vue({
+      el: '#container',
+      delimiters: ['${', '}'],
+      data: {
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+        payoff_info: {{Constants.payoff_info|json}},
+        role: {{player.role|json}},
+      },
+      mounted: function () {
+          if (this.testing_if_yes == 'yes') {
+            console.log('got here')
+            setTimeout(function () {
+              document.getElementById("submit").click();
+            }, 500*Math.random())
+        }
+      },
+      computed: {
+        action_result_example: function() {
+          return {'payoffs': {'U': {'L': [11,22], 'R':[0,0]}, 'D': {'L': [0,0], 'R':[33,44]}}, 
+                'round_number': 13, 
+                'section_number': 1, 
+                'role': this.role, 
+                'action': 'D', 
+                'opponent_action': 'R', 
+                'payoff_prob': this.role == 'blue' ? 33 : 44, 
+                'payoff_draw': 0.1421, 
+                'payoff_bool': true, 
+                'payoff_amount': this.payoff_info.a.action.amount, 
+                'possible_payoff_amount': this.payoff_info.a.action.amount}
+        },
+        belief_result_example: function() {
+          return {
+            'payoffs': {'U': {'L': [11,22], 'R':[0,0]}, 'D': {'L': [0,0], 'R':[33,44]}}, 
+            'round_number': 42, 
+            'role': this.role, 
+            'section_number': 2, 
+            'belief': 23, 
+            'paid_question': 85,
+            'paid_question_option': 'lottery',
+            'opponent_action': this.role == 'blue' ? 'R' : 'D', 
+            'lottery_draw': 0.9326, 
+            'payoff_bool': false, 
+            'payoff_amount': 0, 
+            'possible_payoff_amount': this.payoff_info.b.belief.amount
+          }
+        },        
+        belief_result_example2: function() {
+          return {
+            'payoffs': {'U': {'L': [11,22], 'R':[0,0]}, 'D': {'L': [0,0], 'R':[33,44]}}, 
+            'round_number': 42, 
+            'role': this.role, 
+            'section_number': 2, 
+            'belief': 23, 
+            'paid_question': 15,
+            'paid_question_option': 'action',
+            'opponent_action': this.role == 'blue' ? 'R' : 'D', 
+            'lottery_draw': 0.9326, 
+            'payoff_bool': false, 
+            'payoff_amount': 0, 
+            'possible_payoff_amount': this.payoff_info.b.belief.amount
+          }
+        }
+      }
+    });
+
+</script>
+
+{% endblock %}

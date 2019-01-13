@@ -1,0 +1,130 @@
+{% extends "global/Templates.html" %} 
+
+{% block content %}
+
+<div id="interface_container">
+
+  <div id="header">
+    <h3>Training Round {{player.round_number}} of {{Constants.num_rounds}}.</h3>
+  </div>
+
+  <div id="panels-container">
+
+    <div id="main-panel">
+      <div id="main-panel-container">
+
+        <h4>Consider the following payoff matrix:</h4>
+        <hr :class="{imperative_underline: true, red: role=='red', blue: role=='blue'}">
+
+        <payoff-matrix :payoffs="base_payoffs" :role="role" :clickable="clickable" :high="high" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats"></payoff-matrix>
+
+        <h4>If the <span class="blue">blue</span> player plays <span class="blue">${question_actions[0][0]}</span> and the <span class="red">red</span> player plays <span class="red">${question_actions[1][0]}</span>, what is the <span :class="question_player">${question_player}</span> player's probability of receiving the ${{Constants.payoff_info.a.action.amount}} prize?</h4>
+
+        <h4 id="traininginputouter">
+            <input id="current_response" type="number" min="-100" max="100" step="1" v-model.number="current_response" :class="question_player" @input="setresponse" @keypress.enter.prevent="enterPressed">
+            %
+        </h4>
+        <br>
+        <h4 v-if="undercutting_help">Recall that each player's prize probability is 30% plus the amount shown in the matrix.</h4>
+        <h4 v-if="submit_available">Correct. The <span class="blue">blue</span> player receives the prize with probability <span class="blue">${correct_payoffs[0]}%</span> and the <span class="red">red</span> player receives the prize with probability <span class="red">${correct_payoffs[1]}%</span>.</h4>
+
+        <div id="button-container">
+          <button v-if="submit_available" type="button" name="submit" id="submit" :class="{btn: true, submit_button: true, btnblue: true}" @click="submit()">Continue</button>
+        </div>
+
+        <button name="true_submit" id="true_submit">Submit</button>       
+        <input type="hidden" name="response" id="response" v-model="response">
+        <input type="hidden" name="played_by" id="played_by" v-model="played_by">
+        <input type="hidden" name="time_to_decide" id="time_to_decide" v-model="time_to_decide"> 
+        <input type="hidden" name="time_to_submit" id="time_to_submit" v-model="time_to_submit"> 
+      
+      </div>  
+    </div>
+  </div>
+
+  {% endblock %} 
+
+{% block scripts %}
+
+
+
+
+<script>
+    vm = new Vue({
+      el: '#interface_container',
+      delimiters: ['${', '}'],
+      data: {
+        base_payoffs: base_payoffs,
+        player: {{player.id_in_group}},
+        role: "blue",
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+        played_by: "--",
+        time_now: null,
+        start_time: null,
+        time_to_decide: null,
+        time_to_submit: null,
+        times_changed_mind: -1,
+        current_response: null,
+        response: '',
+        question_player: "{{player.game_question_player}}",
+        question_actions: "{{player.game_question_actions}}".split(','),
+      },
+      computed: {
+        correct_payoffs: function () {
+          correct_payoffs = _.cloneDeep(this.base_payoffs[this.question_actions[0]][this.question_actions[1]])
+          if ("{{Constants.name_in_url}}" == "undercutting_training") {correct_payoffs[0]+=30; correct_payoffs[1]+=30}
+          return correct_payoffs
+        },
+        correct_response: function () {
+          if (this.question_player == 'blue') {return this.correct_payoffs[0]}
+          else {return this.correct_payoffs[1]}
+        },
+        high: function () {return {}},
+        clickable: function () {return false},
+        beliefs_valid: function () {return false},
+        beliefs: function () {return {}},
+        submit_available: function () {return this.current_response == this.correct_response},
+        undercutting_help: function () {return this.current_response === this.correct_response - 30},
+        bluestrats: function() {
+          if ('U' == _.keys(this.base_payoffs)[0]) {return ['U','D']}
+          else {return _.keys(this.base_payoffs).sort()}
+        },
+        redstrats: function() {
+          return _.keys(this.base_payoffs[_.keys(this.base_payoffs)[0]]).sort()          
+        }
+      },
+      mounted: function () {
+        this.start_time = _.now()/1000
+        this.active_time = this.start_time + this.time_limit
+          if (this.testing_if_yes == 'yes') {
+            this.response = this.correct_response
+            this.current_response = this.correct_response
+            this.played_by = "Testing"
+            this.times_changed_mind += 1
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)
+            setTimeout(function () {
+              document.getElementById("submit").click();
+            }, 500*Math.random())
+        }
+      },
+      methods: {
+        setresponse: function() {
+            this.response += ','+this.current_response
+            this.times_changed_mind += 1
+            this.played_by = "User"
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)    
+        },
+        submit: function() {
+          this.time_to_submit = (_.now()/1000 - this.start_time).toFixed(3)
+          setTimeout(function () {
+              document.getElementById("true_submit").click();
+            }, 50)
+        },
+        enterPressed: function() {
+          if (this.submit_available) {this.submit()}
+        }
+      }
+    });
+
+</script>
+{% endblock %}

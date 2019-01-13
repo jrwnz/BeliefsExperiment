@@ -1,0 +1,55 @@
+{% extends "global/Templates.html" %}
+{% load staticfiles otree %}
+
+{% block content %}
+
+<div id="interface_container">
+
+    <div id="header"></div>
+    <div id="container">
+        
+        <div id="instructions"><h3>Section 3 Practice Instructions</h3>
+          <div class="instructionsbox"> 
+            <p>You will now play a practice round, which is the same as the paid rounds for Section 3, except it features a different matrix and will not be selected for payment.</p>
+            <p>As a reminder, in Section 3 your task will be the same as in Section 1: in each round, you will be randomly paired  
+              with another player, and then asked to select an action. Each player will be the same color as they were throughout Section 2.</p>
+              <p>As previously described, in rounds chosen for payment, your probability of receiving a ${{Constants.payoff_info.uc.action.amount}} prize will be 30% plus the probability from the chosen cell of the matrix.</p>
+          </div>
+        </div>
+    
+        <br><br>
+        <p>If you have any questions, please raise your hand and wait for assistance. <br> 
+        Otherwise, click 'Continue' to proceed to the practice round.</p>
+        <div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Continue</button></div>
+        </div>
+        </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    vm = new Vue({
+      el: '#container',
+      delimiters: ['${', '}'],
+      data: {
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+      },
+      mounted: function () {
+        if (this.testing_if_yes == 'yes') {
+            setTimeout(function () {
+              document.getElementById("sectioncontinuebutton").click();
+            }, 10)
+          }
+      },
+    });
+
+
+</script>
+
+{% endblock %}
+
+{% block styles %}
+
+
+{% endblock %}

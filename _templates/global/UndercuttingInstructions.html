@@ -1,0 +1,53 @@
+{% extends "global/Templates.html" %}
+{% load staticfiles otree %}
+
+{% block content %}
+
+<div id="interface_container">
+
+    <div id="header"></div>
+    <div id="container">
+    
+    <div id="instructions"><h3>Section 3 Instructions</h3>
+      <div class="instructionsbox"> 
+        <br>
+      <p>You have completed the practice round and will now proceed to Section 3.</p>
+      <p>You will play {{Constants.num_rounds}} rounds, of which {{Constants.payoff_info.uc.action.number}} will be randomly chosen for payment.</p>
+      </div>
+    </div>
+    
+    <p>If you have any questions, please raise your hand and wait for assistance. <br> 
+    Otherwise, click 'Continue' to proceed to Section 3.</p>
+    <div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Continue</button></div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    vm = new Vue({
+      el: '#container',
+      delimiters: ['${', '}'],
+      data: {
+        testing_if_yes: "{{session.config.testing_if_yes}}",
+      },
+      mounted: function () {
+        if (this.testing_if_yes == 'yes') {
+            setTimeout(function () {
+              document.getElementById("sectioncontinuebutton").click();
+            }, 10)
+          }
+      },
+    });
+
+
+</script>
+
+{% endblock %}
+
+{% block styles %}
+
+
+{% endblock %}
