@@ -1,8 +1,19 @@
 {% extends "global/BaseInterface.html" %} 
 
 {% block instructions_above %}
+<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
+<div v-if="collect_beliefs">
+  <h4 :class="{imperative: true, active: active_bool, fade: beliefs_valid}">
+    What do you believe is the probability that a randomly <br> selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span>?  
+  </h4>
+  <h4 id="beliefinputouter" :class="{active: active_bool}">
+    <input id="beliefinput" :disabled="!active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
+    %
+  </h4>
+  </div>
+ 
 <div v-if="collect_actions">
-<h4 :class="{imperative: true, active: active_bool}">Click to select between 
+<h4 :class="{imperative: true, active: active_bool, fade: action}">Click to select between 
   <span v-if="role=='blue'" class="blue" v-for="strat in bluestrats.slice(0,-2)">${strat[0]}, </span>
   <span v-if="role=='red'" class="red" v-for="strat in redstrats.slice(0,-2)">${strat[0]}, </span>
   <span v-if="role=='blue'" class="blue">${bluestrats.slice(-2)[0][0]}</span>
@@ -10,23 +21,15 @@
     and 
   <span v-if="role=='blue'" class="blue">${bluestrats.slice(-1)[0][0]}</span>
   <span v-if="role=='red'" class="red">${redstrats.slice(-1)[0][0]}</span>:</h4>
-<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue'}">
+
 </div>
+<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue', fade: (!collect_actions && beliefs_valid) || (collect_actions && action)}">
 {% endblock %}
 
 
-{% block instructions_below %}
-<div v-if="collect_beliefs">
-<h4 :class="{imperative: true, active: active_bool}">
-  What do you believe is the probability that a randomly <br> selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span>?  
-</h4>
-<hr :class="{imperative_underline: true, active: active_bool, red: role=='red', blue: role=='blue'}">
-<h4 id="beliefinputouter" :class="{active: active_bool}">
-  <input id="beliefinput" :disabled="!active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
-  %
-</h4>
-</div>
-{% endblock %}
+
+
+
 
 {% block scripts %}
 <script>

@@ -54,7 +54,7 @@ body {
   width: 100%;
   text-align: center;
   margin-top: 70px;
-  margin-bottom: 60px;
+  margin-bottom: 0px;
   min-height: 2.4rem;
   height: 2.4rem;
 }
@@ -204,9 +204,17 @@ font-weight: 200;
 .imperative {
   opacity: 0.2;
   transition-duration: 1s;
-
   &.active {
     opacity: 1;
+  }
+
+  &.fade {
+    transition-duration: 0.3s;
+    opacity: 0.3;
+    &:hover {
+      transition-duration: 0.15s;
+      opacity: 1
+    }
   }
 }
 
@@ -222,6 +230,15 @@ font-weight: 200;
     opacity: 0.6;
     width: 30%;
   }
+  &.fade {
+    transition-duration: 0.3s;
+    opacity: 0.3;
+    &:hover {
+      transition-duration: 0.15s;
+      opacity: 1
+    }
+  }
+
 }
 
 

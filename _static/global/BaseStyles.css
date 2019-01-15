@@ -51,7 +51,7 @@ body {
   width: 100%;
   text-align: center;
   margin-top: 70px;
-  margin-bottom: 60px;
+  margin-bottom: 0px;
   min-height: 2.4rem;
   height: 2.4rem;
 }
@@ -226,6 +226,16 @@ p {
   opacity: 1;
 }
 
+.imperative.fade {
+  transition-duration: 0.3s;
+  opacity: 0.3;
+}
+
+.imperative.fade:hover {
+  transition-duration: 0.15s;
+  opacity: 1;
+}
+
 .imperative_underline {
   width: 0%;
   opacity: 0.2;
@@ -243,6 +253,16 @@ p {
 .imperative_underline.active {
   opacity: 0.6;
   width: 30%;
+}
+
+.imperative_underline.fade {
+  transition-duration: 0.3s;
+  opacity: 0.3;
+}
+
+.imperative_underline.fade:hover {
+  transition-duration: 0.15s;
+  opacity: 1;
 }
 
 #beliefinputouter {
