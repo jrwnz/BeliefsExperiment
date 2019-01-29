@@ -19,7 +19,7 @@ class SectionContinueWait(WaitPage):
 class MainInterface(Page):
     template_name = 'global/MainInterface.html'
     form_model = 'player'
-    form_fields = ['action','played_by','time_to_decide','time_to_submit','times_changed_mind']
+    form_fields = ['action','played_by','time_to_decide','time_to_submit','times_changed_mind','interactions']
 
     def before_next_page(self):
         self.player.set_opponent_action()
