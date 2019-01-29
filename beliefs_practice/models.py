@@ -49,6 +49,8 @@ class Player(BasePlayer):
     time_to_submit = models.FloatField(min=0,blank=True)
     times_changed_mind = models.IntegerField(min=0,blank=True)
 
+    interactions = models.StringField()
+    
     belief = models.StringField(blank=True)
     action = models.StringField(blank=True)
 

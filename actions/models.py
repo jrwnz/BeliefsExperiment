@@ -61,6 +61,8 @@ class Player(BasePlayer):
     time_to_submit = models.FloatField(min=0,blank=True)
     times_changed_mind = models.IntegerField(min=0,blank=True)
 
+    interactions = models.StringField()
+
     action = models.StringField()
     opponent_action = models.StringField(blank=True)
 

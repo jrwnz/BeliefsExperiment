@@ -59,6 +59,7 @@
         show_belief_table: "{{Constants.collect_beliefs}}" == "True",
         action: null,
         belief: null,
+        interactions_raw: []
       },
       computed: {
         high: function () {return [this.action]},
@@ -86,6 +87,9 @@
             if (this.collect_beliefs && !this.beliefs_valid) {return false}
             else if (this.collect_actions && this.action == null) {return false}
             else {return true}
+        },
+        interactions: function () {
+          return JSON.stringify(this.interactions_raw)
         }
       },
       mounted: function () {
@@ -101,11 +105,16 @@
           , 1000)
           if (this.testing_if_yes == 'yes' || this.testing_if_yes == 'practice') {
             this.active_bool = true;
-            this.belief = _.random(100)
-            if (this.role == 'blue') {
-              this.action = _.sampleSize(this.bluestrats,1)[0]
-            } else {
-              this.action = _.sampleSize(this.redstrats,1)[0]
+            if (this.collect_beliefs) {
+              this.belief = _.random(100)
+              this.setbelief()
+            }
+            if (this.collect_actions) {
+              if (this.role == 'blue') {
+                this.setaction(_.sampleSize(this.bluestrats,1)[0])
+              } else {
+                this.setaction(_.sampleSize(this.redstrats,1)[0])
+              }
             }
             this.played_by = "Testing"
             this.times_changed_mind += 1
@@ -117,17 +126,33 @@
       },
       methods: {
         setaction: function(action) {
-            if (action != this.action) {this.times_changed_mind += 1}
-            this.action = action
-            this.played_by = "User"
+            if (action == this.action) {
+              this.action = null
+              console.log('set_null')
+            }
+            else if (action != this.action) {
+              this.action = action
+              this.played_by = "User"
+            }
+            this.times_changed_mind += 1
             this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)
+            this.interactions_raw.push({
+              'interaction': 'setaction',
+              'action': action,
+              'time': (_.now()/1000 - this.start_time).toFixed(3)
+            })
             setTimeout(function () {
             }, 100)    
         },
         setbelief: function() {
             this.times_changed_mind += 1
             this.played_by = "User"
-            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)          
+            this.time_to_decide = (_.now()/1000 - this.start_time).toFixed(3)
+            this.interactions_raw.push({
+              'interaction': 'setbelief',
+              'belief': this.belief,
+              'time': (_.now()/1000 - this.start_time).toFixed(3)
+            })          
         },
         submit: function() {
           this.time_to_submit = (_.now()/1000 - this.start_time).toFixed(3)

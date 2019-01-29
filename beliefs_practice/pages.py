@@ -20,7 +20,7 @@ class MainInterface(Page):
     template_name = 'global/MainInterface.html'
     form_model = 'player'
     def get_form_fields(self):
-        form_fields = ['played_by','time_to_decide','time_to_submit','times_changed_mind']
+        form_fields = ['played_by','time_to_decide','time_to_submit','times_changed_mind','interactions']
         if Constants.collect_beliefs:
             form_fields.append('belief')
         if Constants.collect_actions:
