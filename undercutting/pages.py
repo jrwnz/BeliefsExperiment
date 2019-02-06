@@ -18,16 +18,19 @@ class MainInterface(Page):
     def before_next_page(self):
         self.player.set_opponent_action()
 
-class UndercuttingFinished(WaitPage):
-    wait_for_all_groups = True
-    template_name = 'global/UndercuttingFinished.html'
-
-    def after_all_players_arrive(self):
         if self.round_number == Constants.num_rounds:
-            for player in self.subsession.get_players():
-                player.store_data()
+            self.player.store_data()
 
-    def is_displayed(self):
-        return self.round_number == Constants.num_rounds
+# class UndercuttingFinished(WaitPage):
+#     wait_for_all_groups = True
+#     template_name = 'global/UndercuttingFinished.html'
 
-page_sequence = [UndercuttingInstructions, MainInterface, UndercuttingFinished]
+#     def after_all_players_arrive(self):
+#         if self.round_number == Constants.num_rounds:
+#             for player in self.subsession.get_players():
+#                 player.store_data()
+
+#     def is_displayed(self):
+#         return self.round_number == Constants.num_rounds
+
+page_sequence = [UndercuttingInstructions, MainInterface]

@@ -25,9 +25,9 @@ SESSION_CONFIGS = [    {
                         'actions',
                         'beliefs_practice',
                         'beliefs',
-                        'undercutting_training',
-                        'undercutting_practice',
-                        'undercutting',
+                        # 'undercutting_training',
+                        # 'undercutting_practice',
+                        # 'undercutting',
                         'payments'
                         ],                        
     },

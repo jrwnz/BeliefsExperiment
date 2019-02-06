@@ -49,12 +49,12 @@ class Subsession(BaseSubsession):
             section_a_outcomes = json.load(f)
         with open('Settings/TestData/section_b_outcomes.json','r') as f:
             section_b_outcomes = json.load(f)            
-        with open('Settings/TestData/section_uc_outcomes.json','r') as f:
-            section_uc_outcomes = json.load(f)
+        # with open('Settings/TestData/section_uc_outcomes.json','r') as f:
+        #     section_uc_outcomes = json.load(f)
         for player in self.get_players():
             player.participant.vars['section_a_outcomes'] = section_a_outcomes
             player.participant.vars['section_b_outcomes'] = section_b_outcomes
-            player.participant.vars['section_uc_outcomes'] = section_uc_outcomes
+            # player.participant.vars['section_uc_outcomes'] = section_uc_outcomes
 
     def write_test_data(self):
         print('---------------------writing test data---------------------')
@@ -68,9 +68,9 @@ class Subsession(BaseSubsession):
         if 'section_b_outcomes' in player.participant.vars:
             with open('Settings/TestData/section_b_outcomes.json','w') as f:
                 json.dump(player.participant.vars['section_b_outcomes'],f) 
-        if 'section_uc_outcomes' in player.participant.vars:
-            with open('Settings/TestData/section_uc_outcomes.json','w') as f:
-                json.dump(player.participant.vars['section_uc_outcomes'],f)
+        # if 'section_uc_outcomes' in player.participant.vars:
+        #     with open('Settings/TestData/section_uc_outcomes.json','w') as f:
+        #         json.dump(player.participant.vars['section_uc_outcomes'],f)
 
 
 
@@ -111,7 +111,8 @@ class Player(BasePlayer):
                     ])
                     outcome['payment_type'] = payment_type
                     outcome['section'] = section
-                    outcome['section_number'] = ['a','b','uc'].index(section)+1
+                    outcome['section_number'] = ['a','b'].index(section)+1
+                    # outcome['section_number'] = ['a','b','uc'].index(section)+1
                     paid_round_outcomes.append(outcome)
                     paid_game_codes.append(outcome['game_code'])
 
