@@ -43,7 +43,7 @@
       </div>  
     </div>
 
-    <div id="timer_display"><span v-if="!active_bool">${time_until_active}</span><span v-else>0</span></div>
+    <div id="timer_display"><span v-if="!(beliefs_active_bool || actions_active_bool)">${time_until_active}</span><span v-else>0</span></div>
 
     <div v-if="show_belief_table">
       <div id="belieftablecontainer">
