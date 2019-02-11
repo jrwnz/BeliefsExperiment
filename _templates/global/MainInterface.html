@@ -1,7 +1,7 @@
 {% extends "global/BaseInterface.html" %} 
 
 {% block instructions_above %}
-<hr :class="{imperative_underline: true, active: beliefs_active_bool, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
+<hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
 <div v-if="collect_beliefs">
   <h4 :class="{imperative: true, active: beliefs_active_bool, fade: beliefs_valid}">
     What do you believe is the probability that a randomly <br> selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span>?  
@@ -23,7 +23,7 @@
   <span v-if="role=='red'" class="red">${redstrats.slice(-1)[0][0]}</span>:</h4>
 
 </div>
-<hr :class="{imperative_underline: true, active: actions_active_bool, red: role=='red', blue: role=='blue', fade: (!collect_actions && beliefs_valid) || (collect_actions && action)}">
+<hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (!collect_actions && beliefs_valid) || (collect_actions && action)}">
 {% endblock %}
 
 
@@ -91,6 +91,11 @@
         },
         interactions: function () {
           return JSON.stringify(this.interactions_raw)
+        },
+        show_underlines: function () {
+          if (this.collect_actions && this.collect_beliefs) {return this.beliefs_active_bool}
+          else if (this.collect_actions && !this.collect_beliefs) {return this.actions_active_bool}
+          else if (this.collect_beliefs && !this.collect_actions) {return this.beliefs_active_bool}
         }
       },
       mounted: function () {
