@@ -1,7 +1,7 @@
 {% extends "global/BaseInterface.html" %} 
 
 {% block instructions_above %}
-<h4 v-if="collect_actions && collect_beliefs">Consider a randomly selected Section 1 round in which the game below was played.</h4>
+<h4 v-if="collect_actions && collect_beliefs">Consider a randomly selected <span v-if="practice">practice </span>round of Section 1 in which the matrix below was played.</h4>
 <hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
 <div v-if="collect_beliefs">
   <h4 :class="{imperative: true, active: beliefs_active_bool, fade: beliefs_valid}">
