@@ -1,11 +1,11 @@
 {% extends "global/BaseInterface.html" %} 
 
 {% block instructions_above %}
-<h4 v-if="collect_actions && collect_beliefs">Consider a randomly selected <span v-if="practice">practice </span>round of Section 1 in which the matrix below was played.</h4>
+<h4 v-if="collect_actions && collect_beliefs">The computer has randomly selected a <span v-if="practice">practice </span>round of Section 1 in which the matrix below was played.</h4>
 <hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
 <div v-if="collect_beliefs">
   <h4 :class="{imperative: true, active: beliefs_active_bool, fade: beliefs_valid}">
-    What do you believe is the probability that a randomly <br> selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span> in that round?  
+    What do you believe is the probability that a <br>randomly selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span> in that round?  
   </h4>
   <h4 id="beliefinputouter" :class="{active: beliefs_active_bool}">
     <input id="beliefinput" :disabled="!beliefs_active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
