@@ -102,6 +102,7 @@
                 <h3>Section ${result.section_number}, Round ${result.round_number}</h3>
                 <h4>Earnings: $${result.payoff_amount}</h4>
                 <br>
+                <p v-if="result.section_number == 2">Recall that the computer randomly selected a round from Section 1 in which the same matrix was played. It then randomly selected a <span class="red" v-if="result.role=='blue'">red</span><span class="blue" v-else>blue</span> player and recorded their action in that round.</p>
                 <p>You were <span :class="result.role">${result.role}</span> and chose <span :class="result.role">${result.action[0]}</span>. The <span v-if="result.role == 'blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span :class="{blue: result.role=='red', red: result.role=='blue'}">${result.opponent_action[0]}</span>.</p>  
                 <p v-if="!this.big">You therefore had a ${result.payoff_prob}% probability of earning $${result.possible_payoff_amount}.</p>
                 <p v-else>You therefore had a 30% + <span v-if="result.sub_prize<0">(${result.sub_prize}%)</span><span v-else>${result.sub_prize}%</span> = ${result.prize}% probability of earning $${result.possible_payoff_amount}.</p>
@@ -125,7 +126,8 @@
               <h3>Section ${result.section_number}, Round ${result.round_number}</h3>
               <h4>Earnings: $${result.payoff_amount}</h4>
               <br>
-              <p>You believed the <span class="red" v-if="result.role=='blue'">red</span><span class="blue" v-else>blue</span> player plays <span class="red" v-if="result.role=='blue'">L</span><span class="blue" v-else>U</span> with probability ${result.belief}%.</p>
+              <p v-if="result.section_number == 2">Recall that the computer randomly selected a round from Section 1 in which the same matrix was played. It then randomly selected a <span class="red" v-if="result.role=='blue'">red</span><span class="blue" v-else>blue</span> player and recorded their action in that round.</p>
+              <p>You believed the <span class="red" v-if="result.role=='blue'">red</span><span class="blue" v-else>blue</span> player chose <span class="red" v-if="result.role=='blue'">L</span><span class="blue" v-else>U</span> with probability ${result.belief}%.</p>
               <p>The randomly drawn question was question ${result.paid_question}. <br> Since ${result.paid_question} <span v-if="result.paid_question_option=='action'"><</span><span v-else>>=</span> ${result.belief}, your choice in question ${result.paid_question} was 
               <span v-if="result.paid_question_option=='action'">'$${result.possible_payoff_amount} if the <span class="red" v-if="result.role=='blue'">red</span><span class="blue" v-else>blue</span> player played <span class="red" v-if="result.role=='blue'">L</span><span class="blue" v-else>U</span>'.</span>
               <span v-if="result.paid_question_option=='lottery'">'$${result.possible_payoff_amount} with probability ${result.paid_question}%'.</span></p>
