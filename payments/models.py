@@ -32,10 +32,11 @@ class Subsession(BaseSubsession):
             for outcome in section_a_outcomes:
                 game_code = outcome['game_code']
                 action = outcome['action']
-                if game_code in all_section_a_actions[role]:
-                    all_section_a_actions[role][game_code].append(action)
-                else:
-                    all_section_a_actions[role][game_code] = [action]
+                if action:
+                    if game_code in all_section_a_actions[role]:
+                        all_section_a_actions[role][game_code].append(action)
+                    else:
+                        all_section_a_actions[role][game_code] = [action]
 
         self.session.vars['all_section_a_actions'] = all_section_a_actions
 
@@ -98,7 +99,7 @@ class Player(BasePlayer):
                 section_outcomes = self.participant.vars['section_{}_outcomes'.format(section)]
                 number_of_payoffs = Constants.payoff_info[section][payment_type]['number']
                 for _ in range(number_of_payoffs):
-                    possible_payoff_outcomes = [outcome for outcome in section_outcomes if outcome['game_code'] not in paid_game_codes]
+                    possible_payoff_outcomes = [outcome for outcome in section_outcomes if outcome['game_code'] not in paid_game_codes and outcome['round_complete']]
                     if len(possible_payoff_outcomes) == 0:
                         break
                     outcome = random.choice(possible_payoff_outcomes)
