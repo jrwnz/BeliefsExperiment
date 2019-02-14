@@ -27,7 +27,7 @@ class Constants(BaseConstants):
     with open('Settings/orders.json','r') as f:
         game_order = json.load(f)[name_in_url]
 
-    num_rounds = len(game_order[:2])
+    num_rounds = len(game_order)
 
 class Subsession(BaseSubsession):
     def creating_session(self):
