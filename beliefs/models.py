@@ -72,12 +72,13 @@ class Player(BasePlayer):
     def store_data(self):
         all_outcomes = []
         for round_data in self.in_all_rounds():
-            outcome = {
-                'action': round_data.action,
-                'belief': round_data.belief,
-                'game_code': round_data.game_code,
-                'round_number': round_data.round_number,
-                'role': self.role()
-            }
-            all_outcomes.append(outcome)
+            if round_data.action and round_data.belief:
+                outcome = {
+                    'action': round_data.action,
+                    'belief': round_data.belief,
+                    'game_code': round_data.game_code,
+                    'round_number': round_data.round_number,
+                    'role': self.role()
+                }
+                all_outcomes.append(outcome)
         self.participant.vars['section_b_outcomes'] = all_outcomes

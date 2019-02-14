@@ -12,7 +12,7 @@ SESSION_CONFIG_DEFAULTS = {
     'testing_if_yes': 'no',
     'write_test_data_if_yes': 'no',
     'load_test_data_if_yes': 'no',
-    'time_limit': 15,
+    'time_limit': 10,
     'num_demo_participants': 2,
 }
 
@@ -25,9 +25,6 @@ SESSION_CONFIGS = [    {
                         'actions',
                         'beliefs_practice',
                         'beliefs',
-                        # 'undercutting_training',
-                        # 'undercutting_practice',
-                        # 'undercutting',
                         'payments'
                         ],                        
     },
@@ -51,28 +48,12 @@ SESSION_CONFIGS = [    {
         'display_name': 'Beliefs Practice',
         'app_sequence': ['beliefs_practice'],
     },
-    #             {
-    #     'name': 'undercutting',
-    #     'display_name': 'Undercutting',
-    #     'app_sequence': ['undercutting'],
-    # },
-    #             {
-    #     'name': 'undercutting_practice',
-    #     'display_name': 'Undercutting Practice',
-    #     'app_sequence': ['undercutting_practice'],
-    # },
                 {
         'name': 'matrix_training',
         'display_name': 'Matrix Training',
         'num_demo_participants': 1,
         'app_sequence': ['matrix_training'],
     },
-    #                 {
-    #     'name': 'undercutting_training',
-    #     'display_name': 'Undercutting Training',
-    #     'num_demo_participants': 1,
-    #     'app_sequence': ['undercutting_training'],
-    # },
             {
         'name': 'payments',
         'display_name': 'Payments',

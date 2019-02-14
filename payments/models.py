@@ -49,12 +49,9 @@ class Subsession(BaseSubsession):
             section_a_outcomes = json.load(f)
         with open('Settings/TestData/section_b_outcomes.json','r') as f:
             section_b_outcomes = json.load(f)            
-        # with open('Settings/TestData/section_uc_outcomes.json','r') as f:
-        #     section_uc_outcomes = json.load(f)
         for player in self.get_players():
             player.participant.vars['section_a_outcomes'] = section_a_outcomes
             player.participant.vars['section_b_outcomes'] = section_b_outcomes
-            # player.participant.vars['section_uc_outcomes'] = section_uc_outcomes
 
     def write_test_data(self):
         print('---------------------writing test data---------------------')
@@ -68,11 +65,6 @@ class Subsession(BaseSubsession):
         if 'section_b_outcomes' in player.participant.vars:
             with open('Settings/TestData/section_b_outcomes.json','w') as f:
                 json.dump(player.participant.vars['section_b_outcomes'],f) 
-        # if 'section_uc_outcomes' in player.participant.vars:
-        #     with open('Settings/TestData/section_uc_outcomes.json','w') as f:
-        #         json.dump(player.participant.vars['section_uc_outcomes'],f)
-
-
 
 class Group(BaseGroup):
     pass
@@ -106,13 +98,13 @@ class Player(BasePlayer):
                 section_outcomes = self.participant.vars['section_{}_outcomes'.format(section)]
                 number_of_payoffs = Constants.payoff_info[section][payment_type]['number']
                 for _ in range(number_of_payoffs):
-                    outcome = random.choice([
-                        outcome for outcome in section_outcomes if outcome['game_code'] not in paid_game_codes
-                    ])
+                    possible_payoff_outcomes = [outcome for outcome in section_outcomes if outcome['game_code'] not in paid_game_codes]
+                    if len(possible_payoff_outcomes) == 0:
+                        break
+                    outcome = random.choice(possible_payoff_outcomes)
                     outcome['payment_type'] = payment_type
                     outcome['section'] = section
                     outcome['section_number'] = ['a','b'].index(section)+1
-                    # outcome['section_number'] = ['a','b','uc'].index(section)+1
                     paid_round_outcomes.append(outcome)
                     paid_game_codes.append(outcome['game_code'])
 
@@ -131,8 +123,6 @@ class Player(BasePlayer):
                     payoff_prob = outcome['payoffs'][outcome['action']][outcome['opponent_action']][0]
                 else:
                     payoff_prob = outcome['payoffs'][outcome['opponent_action']][outcome['action']][1]
-                if outcome['section'] == 'uc':
-                    payoff_prob += 30
                 outcome['payoff_prob'] = payoff_prob
                 outcome['payoff_draw'] = random.random()
                 outcome['payoff_bool'] = outcome['payoff_draw']*100 < outcome['payoff_prob']
@@ -148,7 +138,6 @@ class Player(BasePlayer):
             outcome['payoff_amount'] = outcome['possible_payoff_amount'] if outcome['payoff_bool'] else 0
 
             self.participant.vars['paid_round_outcomes'] = paid_round_outcomes
-
 
         self.action_earnings = sum([outcome['payoff_amount'] for outcome in paid_round_outcomes if outcome['payment_type'] == 'action'])
         self.belief_earnings = sum([outcome['payoff_amount'] for outcome in paid_round_outcomes if outcome['payment_type'] == 'belief'])
