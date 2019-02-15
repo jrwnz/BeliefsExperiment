@@ -20,7 +20,7 @@
             What do you believe is the probability that a <br>randomly selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span> in that round?  
           </h4>
           <h4 id="beliefinputouter" :class="{active: beliefs_active_bool}">
-            <input id="beliefinput" :disabled="!beliefs_active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
+            <input id="beliefinput" :disabled="!beliefs_active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="">
             %
           </h4>
           </div>
@@ -211,9 +211,6 @@
           setTimeout(function () {
               document.getElementById("true_submit").click();
             }, 50)
-        },
-        enterPressed: function() {
-          if (this.submit_available) {this.submit()}
         }
       }
     });
