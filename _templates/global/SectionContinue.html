@@ -4,18 +4,18 @@
 {% block content %}
 
 <div id="header">
-        <h3></h3>
-      </div>
-    
-      <div id="panels-container">
-        <div id="main-panel">
-          <div id="waiting-container">
-            <h3>Please wait for instructions before continuing.</h3>
-          </div>
-          <br><br><br><br><br><br><br><br>
-          <div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Continue</button></div>
-        </div>
-      </div>
+  <h3></h3>
+</div>
+
+<div id="panels-container">
+  <div id="main-panel">
+    <div id="waiting-container">
+      <h3>Please wait for instructions before continuing.</h3>
+    </div>
+    <br><br><br><br><br><br><br><br>
+    <div id="buttoncontainer"><button class="submit_button btn btnblue" id="sectioncontinuebutton">Continue</button></div>
+  </div>
+</div>
 
 </div>
 
@@ -28,7 +28,7 @@
       el: '#container',
       delimiters: ['${', '}'],
       data: {
-        testing_if_yes: "{{session.config.testing_if_yes}}",
+        testing_if_yes: {{session.config.testing_if_yes|json}},
       },
       mounted: function () {
         if (this.testing_if_yes == 'yes') {

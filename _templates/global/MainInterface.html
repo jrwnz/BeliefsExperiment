@@ -1,64 +1,102 @@
-{% extends "global/BaseInterface.html" %} 
+{% extends "global/Templates.html" %} {% load staticfiles otree %} 
 
-{% block instructions_above %}
-<h4 v-if="collect_actions && collect_beliefs">The computer has randomly selected a <span v-if="practice">practice </span>round of Section 1 in which the matrix below was played.</h4>
-<hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
-<div v-if="collect_beliefs">
-  <h4 :class="{imperative: true, active: beliefs_active_bool, fade: beliefs_valid}">
-    What do you believe is the probability that a <br>randomly selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span> in that round?  
-  </h4>
-  <h4 id="beliefinputouter" :class="{active: beliefs_active_bool}">
-    <input id="beliefinput" :disabled="!beliefs_active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
-    %
-  </h4>
+{% block content %}
+
+<div id="interface_container">
+
+  <div id="header">
+    <h3><span v-if="practice">Practice</span> Round {{player.round_number}} of {{Constants.num_rounds}}. You are <span v-if="role=='blue'" class="blue">blue</span><span v-else class="red">red</span>.</h3>
   </div>
- 
-<div v-if="collect_actions">
-<h4 :class="{imperative: true, active: actions_active_bool, fade: action}"><span v-if="collect_actions && collect_beliefs">The computer has randomly selected a <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player and recorded <br>their action from that round. </span>Please click to select between 
-  <span v-if="role=='blue'" class="blue" v-for="strat in bluestrats.slice(0,-2)">${strat[0]}, </span>
-  <span v-if="role=='red'" class="red" v-for="strat in redstrats.slice(0,-2)">${strat[0]}, </span>
-  <span v-if="role=='blue'" class="blue">${bluestrats.slice(-2)[0][0]}</span>
-  <span v-if="role=='red'" class="red">${redstrats.slice(-2)[0][0]}</span> 
-    and 
-  <span v-if="role=='blue'" class="blue">${bluestrats.slice(-1)[0][0]}</span>
-  <span v-if="role=='red'" class="red">${redstrats.slice(-1)[0][0]}</span>:</h4>
 
-</div>
-<hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (!collect_actions && beliefs_valid) || (collect_actions && action)}">
-{% endblock %}
+  <div id="panels-container">
+
+    <div id="main-panel">
+      <div id="main-panel-container">
+
+        <h4 v-if="collect_actions && collect_beliefs">The computer has randomly selected a <span v-if="practice">practice </span>round of Section 1 in which the matrix below was played.</h4>
+        <hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (collect_beliefs && beliefs_valid) || (!collect_beliefs && action)}">
+        <div v-if="collect_beliefs">
+          <h4 :class="{imperative: true, active: beliefs_active_bool, fade: beliefs_valid}">
+            What do you believe is the probability that a <br>randomly selected <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span> in that round?  
+          </h4>
+          <h4 id="beliefinputouter" :class="{active: beliefs_active_bool}">
+            <input id="beliefinput" :disabled="!beliefs_active_bool" type="number" min="0" max="100" step="1" v-model.number="belief" :class="{blue: role=='red', red: role=='blue'}" @input="setbelief" @keypress.enter.prevent="enterPressed">
+            %
+          </h4>
+          </div>
+         
+        <div v-if="collect_actions">
+        <h4 :class="{imperative: true, active: actions_active_bool, fade: action}"><span v-if="collect_actions && collect_beliefs">The computer has randomly selected a <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player and recorded <br>their action from that round. </span>Please click to select between 
+          <span v-if="role=='blue'" class="blue" v-for="strat in bluestrats.slice(0,-2)">${strat[0]}, </span>
+          <span v-if="role=='red'" class="red" v-for="strat in redstrats.slice(0,-2)">${strat[0]}, </span>
+          <span v-if="role=='blue'" class="blue">${bluestrats.slice(-2)[0][0]}</span>
+          <span v-if="role=='red'" class="red">${redstrats.slice(-2)[0][0]}</span> 
+            and 
+          <span v-if="role=='blue'" class="blue">${bluestrats.slice(-1)[0][0]}</span>
+          <span v-if="role=='red'" class="red">${redstrats.slice(-1)[0][0]}</span>:</h4>
+        
+        </div>
+        <hr :class="{imperative_underline: true, active: show_underlines, red: role=='red', blue: role=='blue', fade: (!collect_actions && beliefs_valid) || (collect_actions && action)}">
+
+        <payoff-matrix :payoffs="base_payoffs" :role="role" :clickable="clickable" :high="high" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction"></payoff-matrix>
+
+        <div id="button-container">
+          <button v-if="submit_available" type="button" name="submit" id="submit" :class="{btn: true, submit_button: true, btnblue: role=='blue', btnred: role=='red'}" @click="submit()">Submit</button>
+        </div>
+
+        <button name="true_submit" id="true_submit">Submit</button>       
+        <input type="hidden" name="action" id="action" v-model="action">
+        <input type="hidden" name="belief" id="belief" v-model="belief">
+        <input type="hidden" name="interactions" id="interactions" v-model="interactions">
+        <input type="hidden" name="played_by" id="played_by" v-model="played_by">
+        <input type="hidden" name="time_to_decide" id="time_to_decide" v-model="time_to_decide"> 
+        <input type="hidden" name="time_to_submit" id="time_to_submit" v-model="time_to_submit"> 
+        <input type="hidden" name="times_changed_mind" id="times_changed_mind" v-model="times_changed_mind"> 
+      
+      </div>  
+    </div>
+
+    <div id="timer_display"><span v-if="!(beliefs_active_bool || actions_active_bool)">${time_until_active}</span><span v-else>0</span></div>
+
+    <div v-if="show_belief_table">
+      <div id="belieftablecontainer">
+        <belief-table :start="0" :stop="33" :role="role" :beliefsvalid="beliefs_valid" :belief="belief"></belief-table>
+        <belief-table :start="34" :stop="66" :role="role" :beliefsvalid="beliefs_valid" :belief="belief"></belief-table>
+        <belief-table :start="67" :stop="100" :role="role" :beliefsvalid="beliefs_valid" :belief="belief"></belief-table>
+        <p>One question will be drawn at random for payment.</p>
+        <br><br><br>
+      </div>
+    </div>
+
+  </div>
+
+  {% endblock %} 
 
 
-
-
-
-
-{% block scripts %}
+  {% block scripts %}
 <script>
     vm = new Vue({
       el: '#interface_container',
       delimiters: ['${', '}'],
       data: {
         base_payoffs: base_payoffs,
-        // player: {{player.id_in_group}},
-        role: "{{player.role}}",
-        practice: "{{Constants.practice}}" == "True",
-        testing_if_yes: "{{session.config.testing_if_yes}}",
+        role: {{player.role|json}},
+        practice: {{Constants.practice|json}},
+        testing_if_yes: {{session.config.testing_if_yes|json}},
         played_by: "--",
         time_now: null,
         start_time: null,
         active_time: null,
         actions_active_bool: false,
         beliefs_active_bool: false,
-        time_limit: {{ session.config.time_limit}},
-        time_until_active: {{ session.config.time_limit}},
-        // time_limit: 1,
-        // time_until_active: 1,
+        time_limit: {{session.config.time_limit|json}},
+        time_until_active: {{session.config.time_limit|json}},
         time_to_decide: null,
         time_to_submit: null,
         times_changed_mind: -1,
-        collect_actions: "{{Constants.collect_actions}}" == "True",
-        collect_beliefs: "{{Constants.collect_beliefs}}" == "True",
-        show_belief_table: "{{Constants.collect_beliefs}}" == "True",
+        collect_actions: {{Constants.collect_actions|json}},
+        collect_beliefs: {{Constants.collect_beliefs|json}},
+        show_belief_table: {{Constants.collect_beliefs|json}},
         action: null,
         belief: null,
         interactions_raw: [],
@@ -182,3 +220,6 @@
 
 </script>
 {% endblock %}
+  
+  
+  

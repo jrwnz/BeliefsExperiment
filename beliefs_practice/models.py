@@ -68,6 +68,3 @@ class Player(BasePlayer):
         self.game_index = game['Index']
         self.game_payoffs = json.dumps(game_info['Payoffs'])
         self.game_iteration = game['Iteration']
-
-    def store_data(self):
-        pass

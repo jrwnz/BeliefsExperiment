@@ -2,85 +2,49 @@
 
 {% block content %}
 
-
 {% endblock %} 
   
-  {% block global_scripts %}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+{% block global_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
 
-  <script type="text/x-template" id="belief-table-template">
-  <div class="belief_table_inner_container">
-        <table class="belieftable">
-            <thead>
-            <tr><td></td><td colspan="3">Would you rather have:</td></tr>
-            <tr><td></td><td>Option A:</td><td></td><td>Option B:</td></tr>
-        </thead>
-        <tbody>
-            <tr v-for="n in _.range(start,stop+1,1)" class="questionrow"><td>Q.${n}</td><td :class="{fade: beliefsvalid && n >= belief}">${{Constants.payoff_info.b.belief.amount}} if the <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span></td><td :class="{fade: beliefsvalid}">or</td><td :class="{fade: beliefsvalid && n < belief}">${{Constants.payoff_info.b.belief.amount}} with probability ${n}%</td></tr>
-            <tr v-for="n in _.range(0,34+(start-stop)-1,1)" class="questionrow"><td></td><td></td><td>---</td><td></td></tr>
-            </tbody>
-        </table>
-        </div>
-    </script>
-
-  <script type="text/x-template" id="payoff-matrix-template">
-    <div :class="classObject">
-    <table>
-      <thead>  
-        <td></td>
-        <pm-strat v-for="redstrat in redstrats" :strats="[redstrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction" ></pm-strat>
-      </thead>
-      <tbody>
-        <tr v-for="bluestrat in bluestrats">
-          <pm-strat :strats="[bluestrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction"></pm-strat>
-          <pm-pay v-for="redstrat in redstrats" :strats="[bluestrat,redstrat]" :payoff="payoffs[bluestrat][redstrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction"></pm-pay>
-          <pm-belief :strat="bluestrat" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats"></pm-belief>      
-        </tr>
-        <tr>            
-        <td></td>
-        <pm-belief v-for="redstrat in redstrats" :strat="redstrat" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats"></pm-belief>
-        <td></td>
-        </tr>
-      </tbody>
+<script type="text/x-template" id="belief-table-template">
+<div class="belief_table_inner_container">
+    <table class="belieftable">
+        <thead>
+        <tr><td></td><td colspan="3">Would you rather have:</td></tr>
+        <tr><td></td><td>Option A:</td><td></td><td>Option B:</td></tr>
+    </thead>
+    <tbody>
+        <tr v-for="n in _.range(start,stop+1,1)" class="questionrow"><td>Q.${n}</td><td :class="{fade: beliefsvalid && n >= belief}">${{Constants.payoff_info.b.belief.amount}} if the <span v-if="role=='blue'" class="red">red</span><span v-else class="blue">blue</span> player chose <span v-if="role=='blue'" class="red">L</span><span v-else class="blue">U</span></td><td :class="{fade: beliefsvalid}">or</td><td :class="{fade: beliefsvalid && n < belief}">${{Constants.payoff_info.b.belief.amount}} with probability ${n}%</td></tr>
+        <tr v-for="n in _.range(0,34+(start-stop)-1,1)" class="questionrow"><td></td><td></td><td>---</td><td></td></tr>
+        </tbody>
     </table>
+    </div>
+</script>
+
+<script type="text/x-template" id="payoff-matrix-template">
+  <div :class="classObject">
+  <table>
+    <thead>  
+      <td></td>
+      <pm-strat v-for="redstrat in redstrats" :strats="[redstrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction" ></pm-strat>
+    </thead>
+    <tbody>
+      <tr v-for="bluestrat in bluestrats">
+        <pm-strat :strats="[bluestrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction"></pm-strat>
+        <pm-pay v-for="redstrat in redstrats" :strats="[bluestrat,redstrat]" :payoff="payoffs[bluestrat][redstrat]" :high="high" :clickable="clickable" :role="role" :bluestrats="bluestrats" :redstrats="redstrats" @setaction="setaction"></pm-pay>
+        <pm-belief :strat="bluestrat" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats"></pm-belief>      
+      </tr>
+      <tr>            
+      <td></td>
+      <pm-belief v-for="redstrat in redstrats" :strat="redstrat" :beliefs="beliefs" :bluestrats="bluestrats" :redstrats="redstrats"></pm-belief>
+      <td></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-  </script>
-
-
-  <!-- <script type="text/x-template" id="old-payoff-matrix-template">
-    <div class="matrix-container">
-    <table>
-      <thead>  
-        <td></td>
-        <pm-strat :strats="['L']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-strat>
-        <pm-strat :strats="['R']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-strat>
-      </thead>
-      <tbody>
-        <tr>
-          <pm-strat :strats="['U']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-strat>
-          <pm-pay :strats="['U','L']" :payoff="payoffs['U']['L']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-pay>
-          <pm-pay :strats="['U','R']" :payoff="payoffs['U']['R']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-pay>
-          <pm-belief :strat="'U'" :beliefs="beliefs"></pm-belief>      
-        </tr>
-        <tr>            
-            <pm-strat :strats="['D']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-strat>
-            <pm-pay :strats="['D','L']" :payoff="payoffs['D']['L']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-pay>
-            <pm-pay :strats="['D','R']" :payoff="payoffs['D']['R']" :high="high" :clickable="clickable" :role="role" @setaction="setaction"></pm-pay>
-            <pm-belief :strat="'D'" :beliefs="beliefs"></pm-belief>
-        </tr>
-        <tr>            
-        <td></td>
-        <pm-belief :strat="'L'" :beliefs="beliefs"></pm-belief>
-        <pm-belief :strat="'R'" :beliefs="beliefs"></pm-belief>
-        <td></td>
-        </tr>
-      </tbody>
-    </table>
-</div>
-  </script> -->
-
-
+</script>
 
 
 <script type="text/x-template" id="pm-pay-template">
@@ -147,83 +111,81 @@
 
 
   
-  <script>
-      console.log('loading templates')
-
-    Vue.component('belief-result', {
-      props: ['result'],
-      template: '#belief-result-template',
-      name: 'belief-result',
-      delimiters: ['${', '}'],
-      computed: {
-        bluestrats: function() {
-          matrix = this.result.payoffs
-          if ('U' == _.keys(matrix)[0]) {return ['U','D']}
-          else {return _.keys(matrix).sort()}
-        },
-        redstrats: function() {
-          matrix = this.result.payoffs
-          return _.keys(matrix[_.keys(matrix)[0]]).sort()          
-        },
-        big: function() {
-          matrix = this.result.payoffs
-          return _.keys(matrix).length > 2
-        }
-      }
-    });
-
-    Vue.component('action-result', {
-      props: ['result'],
-      template: '#action-result-template',
-      name: 'action-result',
-      delimiters: ['${', '}'],
-      computed: {
-        bluestrats: function() {
-          matrix = this.result.payoffs
-          if ('U' == _.keys(matrix)[0]) {return ['U','D']}
-          else {return _.keys(matrix).sort()}
-        },
-        redstrats: function() {
-          matrix = this.result.payoffs
-          return _.keys(matrix[_.keys(matrix)[0]]).sort()          
-        },
-        big: function() {
-          matrix = this.result.payoffs
-          return _.keys(matrix).length > 2
-          return []
-        }
-      }
-    });
-
-
-    Vue.component('belief-table', {
-      props: ['role','prize','beliefsvalid','belief','start','stop'],
-      template: '#belief-table-template',
-      name: 'belief-table',
-      delimiters: ['${', '}'],
-    });
-
-
-    Vue.component('payoff-matrix', {
-      props: ['payoffs', 'high', 'clickable', 'role', 'beliefs', 'bluestrats', 'redstrats'],
-      template: '#payoff-matrix-template',
-      name: 'payoff-matrix',
-      delimiters: ['${', '}'],
-      methods: {
-            setaction: function(action) {
-              console.log('samatrix',action)
-            this.$emit('setaction',action)
-            }
+<script>
+Vue.component('belief-result', {
+  props: ['result'],
+  template: '#belief-result-template',
+  name: 'belief-result',
+  delimiters: ['${', '}'],
+  computed: {
+    bluestrats: function() {
+      matrix = this.result.payoffs
+      if ('U' == _.keys(matrix)[0]) {return ['U','D']}
+      else {return _.keys(matrix).sort()}
     },
-    computed: {
+    redstrats: function() {
+      matrix = this.result.payoffs
+      return _.keys(matrix[_.keys(matrix)[0]]).sort()          
+    },
+    big: function() {
+      matrix = this.result.payoffs
+      return _.keys(matrix).length > 2
+    }
+  }
+});
+
+Vue.component('action-result', {
+  props: ['result'],
+  template: '#action-result-template',
+  name: 'action-result',
+  delimiters: ['${', '}'],
+  computed: {
+    bluestrats: function() {
+      matrix = this.result.payoffs
+      if ('U' == _.keys(matrix)[0]) {return ['U','D']}
+      else {return _.keys(matrix).sort()}
+    },
+    redstrats: function() {
+      matrix = this.result.payoffs
+      return _.keys(matrix[_.keys(matrix)[0]]).sort()          
+    },
+    big: function() {
+      matrix = this.result.payoffs
+      return _.keys(matrix).length > 2
+      return []
+    }
+  }
+});
+
+
+Vue.component('belief-table', {
+  props: ['role','prize','beliefsvalid','belief','start','stop'],
+  template: '#belief-table-template',
+  name: 'belief-table',
+  delimiters: ['${', '}'],
+});
+
+
+Vue.component('payoff-matrix', {
+  props: ['payoffs', 'high', 'clickable', 'role', 'beliefs', 'bluestrats', 'redstrats'],
+  template: '#payoff-matrix-template',
+  name: 'payoff-matrix',
+  delimiters: ['${', '}'],
+  methods: {
+    setaction: function(action) {
+      console.log('samatrix',action)
+    this.$emit('setaction',action)
+    }
+  },
+  computed: {
     classObject: function () {
       return {
           'matrix-container': true,
           'big': this.bluestrats.length > 2 | this.redstrats.length > 2
       }
     }
-}
-    });
+  }
+});
 
 
 Vue.component('pm-strat', {
@@ -280,43 +242,42 @@ computed: {
 }
 });
 
-    Vue.component('pm-belief', {
-      props: ['strat','beliefs', 'bluestrats', 'redstrats'],
-      template: '#pm-belief-template',
-      name: 'pm-belief',
-      delimiters: ['${', '}'],
-      computed: {
-        display_belief: function () {
-            if (this.strat in this.beliefs) {
-                return String(this.beliefs[this.strat])+'%'
-            } else {return ''}
-        },
-        classObject: function () {
-          return {
-            'blue': _.intersection(this.bluestrats,[this.strat]).length > 0,
-            'red': _.intersection(this.redstrats,[this.strat]).length > 0,
-            'belief': true
-          }
-        }
+Vue.component('pm-belief', {
+  props: ['strat','beliefs', 'bluestrats', 'redstrats'],
+  template: '#pm-belief-template',
+  name: 'pm-belief',
+  delimiters: ['${', '}'],
+  computed: {
+    display_belief: function () {
+        if (this.strat in this.beliefs) {
+            return String(this.beliefs[this.strat])+'%'
+        } else {return ''}
+    },
+    classObject: function () {
+      return {
+        'blue': _.intersection(this.bluestrats,[this.strat]).length > 0,
+        'red': _.intersection(this.redstrats,[this.strat]).length > 0,
+        'belief': true
       }
-    });
+    }
+  }
+});
 
 
-  </script>
+</script>
 
 <script>
-    console.log('loading templates')
-    var base_payoffs = JSON.parse({{player.game_payoffs | json}})
-  </script>
+  var base_payoffs = JSON.parse({{player.game_payoffs | json}})
+</script>
 
-  {% block page_scripts %}
+{% block page_scripts %}
 
-  {% endblock %}
+{% endblock %}
 
-  {% endblock %} 
-  
-  {% block global_styles %}
+{% endblock %} 
 
-  <link rel="stylesheet" href="{% static 'global/BaseStyles.min.css' %}"> 
-  
-  {% endblock %}
+{% block global_styles %}
+
+<link rel="stylesheet" href="{% static 'global/BaseStyles.min.css' %}"> 
+
+{% endblock %}

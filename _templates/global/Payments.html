@@ -62,21 +62,21 @@
 
 <script>
 vm = new Vue({
-      el: '#container',
-      delimiters: ['${', '}'],
-      data: {
-        date: new Date().toLocaleDateString('en-US'),
-        paid_round_outcomes: {{player.participant.vars.paid_round_outcomes|json}},
-      },
-      computed: {
-        action_results: function() {
-          return this.paid_round_outcomes.filter(x => x.payment_type == 'action')
-        },
-        belief_results: function() {
-          return this.paid_round_outcomes.filter(x => x.payment_type == 'belief')
-        }
-      }
-    });
+  el: '#container',
+  delimiters: ['${', '}'],
+  data: {
+    date: new Date().toLocaleDateString('en-US'),
+    paid_round_outcomes: {{player.participant.vars.paid_round_outcomes|json}},
+  },
+  computed: {
+    action_results: function() {
+      return this.paid_round_outcomes.filter(x => x.payment_type == 'action')
+    },
+    belief_results: function() {
+      return this.paid_round_outcomes.filter(x => x.payment_type == 'belief')
+    }
+  }
+});
 
 
 </script>

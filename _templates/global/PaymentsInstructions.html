@@ -22,8 +22,6 @@
 <p>As previously described, you will be paid based upon which action you and another player chose for 
   ${payoff_info.a.action.number} round<span v-if="payoff_info.a.action.number>1">s</span> from Section 1, and
   ${payoff_info.b.action.number} round<span v-if="payoff_info.b.action.number>1">s</span> from Section 2.<br>
-  <!-- ${payoff_info.b.action.number} round<span v-if="payoff_info.b.action.number>1">s</span> from Section 2, and
-  ${payoff_info.uc.action.number} round<span v-if="payoff_info.uc.action.number>1">s</span> from Section 3.<br> -->
   You will also be paid based upon the belief you stated about another player's action for 
   ${payoff_info.b.belief.number} round<span v-if="payoff_info.b.action.number>1">s</span> from Section 2.
 <br>
@@ -46,8 +44,6 @@ These rounds are randomly drawn by the computer with the caveat that each of the
     Recall that this means a ${action_result_example.payoff_prob}% chance of earning $${action_result_example.possible_payoff_amount}. </p>
     <p>To determine whether the $${action_result_example.possible_payoff_amount} prize would be paid, a random number is drawn from the continuous uniform distribution between 0 and 1. Since this has a ${action_result_example.payoff_prob}% probability of being below ${(action_result_example.payoff_prob/100).toFixed(2)}, you would be paid the prize only if this is the case. </p>
     <p>In this example, the randomly drawn number is ${action_result_example.payoff_draw}, which is below ${(action_result_example.payoff_prob/100).toFixed(2)}, and therefore the $${action_result_example.possible_payoff_amount} prize would be paid.</p>
-    <!-- <p>For Section 3, the results are presented in the same way, except that your probability of earning $${action_result_example.possible_payoff_amount} 
-        is 30% plus the number shown in the matrix.</p> -->
   </div>
   <hr><br><br><br>
 
@@ -92,13 +88,12 @@ vm = new Vue({
       el: '#container',
       delimiters: ['${', '}'],
       data: {
-        testing_if_yes: "{{session.config.testing_if_yes}}",
+        testing_if_yes: {{session.config.testing_if_yes|json}},
         payoff_info: {{Constants.payoff_info|json}},
         role: {{player.role|json}},
       },
       mounted: function () {
           if (this.testing_if_yes == 'yes') {
-            console.log('got here')
             setTimeout(function () {
               document.getElementById("submit").click();
             }, 500*Math.random())

@@ -25,7 +25,6 @@ class MainInterface(Page):
             form_fields.append('belief')
         if Constants.collect_actions:
             form_fields.append('action')
-
         return form_fields
 
     def before_next_page(self):

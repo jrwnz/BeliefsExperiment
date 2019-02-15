@@ -1,4 +1,4 @@
-{% extends "global/Templates.html" %} 
+{% extends "global/Templates.html" %} {% load staticfiles otree %} 
 
 {% block content %}
 
@@ -25,7 +25,6 @@
             %
         </h4>
         <br>
-        <h4 v-if="undercutting_help">Recall that each player's prize probability is 30% plus the amount shown in the matrix.</h4>
         <h4 v-if="submit_available">Correct. The <span class="blue">blue</span> player receives the prize with probability <span class="blue">${correct_payoffs[0]}%</span> and the <span class="red">red</span> player receives the prize with probability <span class="red">${correct_payoffs[1]}%</span>.</h4>
 
         <div id="button-container">
@@ -46,18 +45,14 @@
 
 {% block scripts %}
 
-
-
-
 <script>
     vm = new Vue({
       el: '#interface_container',
       delimiters: ['${', '}'],
       data: {
         base_payoffs: base_payoffs,
-        player: {{player.id_in_group}},
         role: "blue",
-        testing_if_yes: "{{session.config.testing_if_yes}}",
+        testing_if_yes: {{session.config.testing_if_yes|json}},
         played_by: "--",
         time_now: null,
         start_time: null,
@@ -66,13 +61,12 @@
         times_changed_mind: -1,
         current_response: null,
         response: '',
-        question_player: "{{player.game_question_player}}",
-        question_actions: "{{player.game_question_actions}}".split(','),
+        question_player: {{player.game_question_player|json}} ,
+        question_actions: {{player.game_question_actions|json}}.split(','),
       },
       computed: {
         correct_payoffs: function () {
           correct_payoffs = _.cloneDeep(this.base_payoffs[this.question_actions[0]][this.question_actions[1]])
-          if ("{{Constants.name_in_url}}" == "undercutting_training") {correct_payoffs[0]+=30; correct_payoffs[1]+=30}
           return correct_payoffs
         },
         correct_response: function () {
@@ -84,7 +78,6 @@
         beliefs_valid: function () {return false},
         beliefs: function () {return {}},
         submit_available: function () {return this.current_response == this.correct_response},
-        undercutting_help: function () {return this.current_response === this.correct_response - 30},
         bluestrats: function() {
           if ('U' == _.keys(this.base_payoffs)[0]) {return ['U','D']}
           else {return _.keys(this.base_payoffs).sort()}
