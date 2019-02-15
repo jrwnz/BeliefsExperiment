@@ -2,7 +2,7 @@
 {% load staticfiles otree %}
 
 {% block content %}
-<div id="interface_container">
+<div id="interface_container" v-cloak>
 
 <div id="header"></div>
 <div id="container">
@@ -85,7 +85,7 @@ These rounds are randomly drawn by the computer with the caveat that each of the
 
 <script>
 vm = new Vue({
-      el: '#container',
+      el: '#interface_container',
       delimiters: ['${', '}'],
       data: {
         testing_if_yes: {{session.config.testing_if_yes|json}},

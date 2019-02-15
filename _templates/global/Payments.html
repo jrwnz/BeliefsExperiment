@@ -2,7 +2,7 @@
 {% load staticfiles otree %}
 
 {% block content %}
-<div id="interface_container">
+<div id="interface_container" v-cloak>
 
 <div id="header"></div>
 <div id="container">
@@ -62,7 +62,7 @@
 
 <script>
 vm = new Vue({
-  el: '#container',
+  el: '#interface_container',
   delimiters: ['${', '}'],
   data: {
     date: new Date().toLocaleDateString('en-US'),

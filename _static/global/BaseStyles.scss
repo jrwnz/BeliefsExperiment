@@ -75,8 +75,6 @@ body {
   text-align: center;
 }
 
-
-
 #main-panel {
   float: right;
   height: 100%;
@@ -273,7 +271,6 @@ font-weight: 200;
   td {padding: 0 0.5rem 0 0.5rem;
   
   &.fade {opacity: 0.1}
-
   }
 }
 
@@ -281,7 +278,6 @@ font-weight: 200;
   display: inline-block;
   width: auto;
 }
-
 
 .result_container {
   max-width: 1300px;
@@ -325,13 +321,10 @@ font-weight: 200;
   margin: auto;
 }
 
-
-
-
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    margin: 0;
 }
+
+[v-cloak] {display: none}

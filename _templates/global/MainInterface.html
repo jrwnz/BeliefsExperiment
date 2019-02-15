@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div id="interface_container">
+<div id="interface_container" v-cloak>
 
   <div id="header">
     <h3><span v-if="practice">Practice</span> Round {{player.round_number}} of {{Constants.num_rounds}}. You are <span v-if="role=='blue'" class="blue">blue</span><span v-else class="red">red</span>.</h3>
