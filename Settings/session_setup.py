@@ -252,8 +252,9 @@ if random.random() < 0.5:
     insert_codes = ['Dominance_red','Dominance_blue']
 else:
     insert_codes = ['Dominance_blue','Dominance_red']
+insert_rounds = [7,14]
 for index, code in enumerate(insert_codes):
-    order_codes.insert(round((index+1)*len(order_codes+insert_codes)/(len(insert_codes)+1)),code)
+    order_codes.insert(insert_rounds[index]-1,code)
     
 order_codes = [
     {'red':code,'blue':code}
@@ -274,8 +275,9 @@ for block in range(num_blocks-1):
     order_codes += get_buffered_sample(block_codes,order_codes[-buffer_length:])
 
 insert_codes = ['self','other','self','other','self']
+insert_rounds = [7,14,21,28,35]
 for index, code in enumerate(insert_codes):
-    order_codes.insert(round((index+1)*len(order_codes+insert_codes)/(len(insert_codes)+1)),code)
+    order_codes.insert(insert_rounds[index]-1,code)
 
 order_codes = [
     {'red':'Dominance_red','blue':'Dominance_blue'} if code == 'self' else
