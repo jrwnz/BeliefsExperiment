@@ -1,5 +1,5 @@
-Session #1
+Session #2
 
-Friday Feb 15 2019, 4pm EST
+Thursday Feb 21 2019, 2pm EST
 
-Code: abtlxoyf
+Code: --
