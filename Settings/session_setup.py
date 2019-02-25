@@ -4,7 +4,7 @@ import json
 import numpy as np
 
 ## Seed is 1234 + session number
-session = 1234 + 2 
+session = 1234 + 3 
 random.seed(session)
 
 ## Sets payoff info
